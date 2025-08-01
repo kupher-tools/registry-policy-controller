@@ -107,15 +107,18 @@ func loadPolicyFromFiles() (*RegistryPolicy, error) {
 	}, nil
 }
 
+var policyLoader = loadPolicyFromFiles
+
 func extractAndCheck(namespace string, containers []corev1.Container) bool {
-	policy, err := loadPolicyFromFiles()
+	policy, err := policyLoader()
+
 	if err != nil {
 		log.Printf("Error loading policy: %v", err)
 		return false
 	}
 	if len(policy.Common) == 0 && len(policy.PerNS) == 0 {
 		log.Println("No policies defined")
-		return true
+		return false
 	}
 	log.Println("Loaded policy:", policy)
 
