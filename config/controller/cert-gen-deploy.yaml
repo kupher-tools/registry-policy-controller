@@ -1,0 +1,25 @@
+apiVersion: batch/v1
+kind: Job
+metadata:
+  name: webhook-certgen
+  namespace: default
+spec:
+  template:
+    spec:
+      containers:
+        - name: certgen
+          image: k8s.gcr.io/ingress-nginx/kube-webhook-certgen:v1.3.0
+          args:
+            - create
+            - --host=validate-registry.default.svc
+            - --namespace=default
+            - --cert-name=tls.crt
+            - --key-name=tls.key
+            - --secret-name=validate-registry-tls
+          volumeMounts:
+            - name: certs
+              mountPath: /certs
+      restartPolicy: OnFailure
+      volumes:
+        - name: certs
+          emptyDir: {}

@@ -1,0 +1,34 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: validate-registry
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: validate-registry
+  template:
+    metadata:
+      labels:
+        app: validate-registry
+    spec:
+      containers:
+        - name: webhook
+          image: docker.io/rajeshd2090/verify-registry:0.0.7
+          imagePullPolicy: IfNotPresent
+          ports:
+            - containerPort: 8443
+          volumeMounts:
+            - name: tls-certs
+              mountPath: /tls
+              readOnly: true
+            - name: policy-volume
+              mountPath: /etc/policies
+              readOnly: true
+      volumes:
+        - name: tls-certs
+          secret:
+            secretName: validate-registry-tls
+        - name: policy-volume
+          configMap:
+            name: image-registry-policy

@@ -1,0 +1,18 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: image-registry-policy
+
+data:
+  commonRegistries.yaml: |
+    - registry.kupher.io/
+    - ghcr.io/your-org/
+  
+  namespaceRegistryMap.yaml: |
+    platform:
+      - docker.io/platform-team/
+      - harbor.kupher.io/platform/
+    devops:
+      - ghcr.io/devops-team/
+    frontend:
+      - docker.io/ui-team/
