@@ -11,7 +11,7 @@ COPY . .
 RUN go mod tidy
 
 # Build statically linked binary
-RUN CGO_ENABLED=0 GOOS=linux GOARCH=amd64 go build  main.go
+RUN CGO_ENABLED=0 GOOS=linux GOARCH=amd64 go build  cmd/main.go
 
 # Create small image for deployment
 FROM alpine:3.18
