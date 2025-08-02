@@ -111,7 +111,6 @@ var policyLoader = loadPolicyFromFiles
 
 func extractAndCheck(namespace string, containers []corev1.Container) bool {
 	policy, err := policyLoader()
-
 	if err != nil {
 		log.Printf("Error loading policy: %v", err)
 		return false
@@ -121,7 +120,6 @@ func extractAndCheck(namespace string, containers []corev1.Container) bool {
 		return false
 	}
 	log.Println("Loaded policy:", policy)
-
 	for _, container := range containers {
 		// 1. Check common registries
 		log.Printf("Checking container image: %s", container.Image)
@@ -130,7 +128,6 @@ func extractAndCheck(namespace string, containers []corev1.Container) bool {
 				return true
 			}
 		}
-
 		// 2. Check namespace-specific registries
 		if allowedNSPrefixes, ok := policy.PerNS[namespace]; ok {
 			for _, nsPrefix := range allowedNSPrefixes {
