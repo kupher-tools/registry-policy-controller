@@ -1,4 +1,6 @@
 # Kupher Registry Policy Controller
+[![Quality Gate Status](https://sonarcloud.io/api/project_badges/measure?project=kupher-tools_registry-policy-controller&metric=alert_status)](https://sonarcloud.io/summary/new_code?id=kupher-tools_registry-policy-controller)
+
 A Kubernetes Validating Admission Controller to enforce image registry policies per namespace and across cluster.
 
 ## Overview
