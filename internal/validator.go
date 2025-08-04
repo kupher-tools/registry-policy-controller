@@ -10,6 +10,7 @@ import (
 
 	admissionv1 "k8s.io/api/admission/v1"
 	appsv1 "k8s.io/api/apps/v1"
+	batchv1 "k8s.io/api/batch/v1"
 	corev1 "k8s.io/api/core/v1"
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 	"k8s.io/apimachinery/pkg/types"
@@ -67,6 +68,27 @@ func ValidateRegistry(w http.ResponseWriter, r *http.Request) {
 			return
 		}
 		containers = statefulSet.Spec.Template.Spec.Containers
+	case "Job":
+		var job batchv1.Job
+		if err := json.Unmarshal(admissionReview.Request.Object.Raw, &job); err != nil {
+			writeResponse(w, admissionReview.Request.UID, false, "Failed to parse Job object")
+			return
+		}
+		containers = job.Spec.Template.Spec.Containers
+	case "CronJob":
+		var cronJob batchv1.CronJob
+		if err := json.Unmarshal(admissionReview.Request.Object.Raw, &cronJob); err != nil {
+			writeResponse(w, admissionReview.Request.UID, false, "Failed to parse CronJob object")
+			return
+		}
+		containers = cronJob.Spec.JobTemplate.Spec.Template.Spec.Containers
+	case "ReplicaSet":
+		var replicaSet appsv1.ReplicaSet
+		if err := json.Unmarshal(admissionReview.Request.Object.Raw, &replicaSet); err != nil {
+			writeResponse(w, admissionReview.Request.UID, false, "Failed to parse ReplicaSet object")
+			return
+		}
+		containers = replicaSet.Spec.Template.Spec.Containers
 	default:
 		log.Printf("Unsupported kind: %s", kind)
 		writeResponse(w, admissionReview.Request.UID, false, "Unsupported kind: "+kind)
