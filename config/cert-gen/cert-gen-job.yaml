@@ -30,4 +30,5 @@ spec:
       restartPolicy: OnFailure
       volumes:
         - name: certs
-          emptyDir: {}
+          emptyDir:
+            sizeLimit: 1Mi
