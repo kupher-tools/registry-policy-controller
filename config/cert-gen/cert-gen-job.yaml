@@ -1,14 +1,22 @@
 apiVersion: batch/v1
 kind: Job
 metadata:
-  name: webhook-certgen
+  name: cert-generator
   namespace: default
 spec:
   template:
     spec:
+      serviceAccountName: cert-gen-sa
       containers:
         - name: certgen
           image: k8s.gcr.io/ingress-nginx/kube-webhook-certgen:v1.3.0
+          resources:
+            requests:
+              cpu: "250m"
+              memory: "64Mi"
+            limits:
+              cpu: "500m"
+              memory: "128Mi"
           args:
             - create
             - --host=validate-registry.default.svc
