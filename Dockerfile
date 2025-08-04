@@ -5,15 +5,11 @@ WORKDIR /app
 
 RUN echo "Listing files in /app" && ls -l
 
-COPY cmd internal go.mod ./
-
-RUN echo "Listing files in /app" && ls -l /app
+COPY . .
 
 RUN go mod tidy
 
-
-
-RUN CGO_ENABLED=0 GOOS=linux GOARCH=amd64 go build  ./cmd/main.go
+RUN CGO_ENABLED=0 GOOS=linux GOARCH=amd64 go build -o main ./cmd/
 
 # Stage 2:
 FROM alpine:3.18

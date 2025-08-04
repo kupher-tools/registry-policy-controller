@@ -1,0 +1,12 @@
+# Docker files
+Dockerfile.*
+
+# Jenkinsfiles
+Jenkinsfile
+pipelineConfig.yml
+
+# Deploy files
+./config
+
+# Github Files
+README.md
