@@ -1,0 +1,21 @@
+apiVersion: admissionregistration.k8s.io/v1
+kind: ValidatingWebhookConfiguration
+metadata:
+  name: kupher-registry-policy-controller
+webhooks:
+  - name: registry-policy-controller.kupher.io
+    rules:
+      - apiGroups: ["*"]
+        apiVersions: ["*"]
+        operations: ["CREATE", "UPDATE"]
+        resources: ["*"]
+        scope: "*"
+    clientConfig:
+      service:
+        name: validate-registry
+        namespace: default
+        path: /validate-registry
+        port: 443
+      caBundle: LS0tLS1CRUdJTiBDRVJUSUZJQ0FURS0tLS0tCk1JSUJkVENDQVJ5Z0F3SUJBZ0lSQUswN3U1TFh1ZlNsOS9jMmwzb0tLSG93Q2dZSUtvWkl6ajBFQXdJd0R6RU4KTUFzR0ExVUVDaE1FYm1sc01UQWdGdzB5TlRBM016RXhOREl6TVRoYUdBOHlNVEkxTURjd056RTBNak14T0ZvdwpEekVOTUFzR0ExVUVDaE1FYm1sc01UQlpNQk1HQnlxR1NNNDlBZ0VHQ0NxR1NNNDlBd0VIQTBJQUJPS0h0Mk9rCmJUYUFYcC9TTzFBSVZ4K3VPaU4zTHJyQVB0cGhMcjVtNWpXRFFZc0RtSllicjdjNjhuNXJxNHFqUWNvNEVxQW4KM2dHcjVpTlA4b2V6dGdhalZ6QlZNQTRHQTFVZER3RUIvd1FFQXdJQ0JEQVRCZ05WSFNVRUREQUtCZ2dyQmdFRgpCUWNEQVRBUEJnTlZIUk1CQWY4RUJUQURBUUgvTUIwR0ExVWREZ1FXQkJUS3c4VXZMZ1RBaUY3VUdqbFdBZlNaCjZPTDJaekFLQmdncWhrak9QUVFEQWdOSEFEQkVBaUFmUENpTzRKQkNVRXNVamgvUU5GK01yWjg2bUNyNGkyaVkKWmMydlQxNzdBQUlnTXM5dG9BVUxYSFJHMXgvdEFlc0RDandyNHNDYW1pWFhLUit5K1UwVmZGQT0KLS0tLS1FTkQgQ0VSVElGSUNBVEUtLS0tLQo=
+    admissionReviewVersions: ["v1"]
+    sideEffects: None
