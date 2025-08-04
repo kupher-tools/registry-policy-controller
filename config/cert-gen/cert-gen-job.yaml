@@ -18,6 +18,7 @@ spec:
             limits:
               cpu: "500m"
               memory: "128Mi"
+              ephemeral-storage: "1Mi"
           args:
             - create
             - --host=validate-registry.default.svc
