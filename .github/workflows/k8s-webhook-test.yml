@@ -6,7 +6,7 @@ on:
   workflow_dispatch:  #Manual trigger support
 
 jobs:
-  test-k8s:
+  admission-controller-job:
     runs-on: ubuntu-latest
 
     steps:
@@ -75,6 +75,6 @@ jobs:
         run: |
           kubectl wait --for=condition=ready pod -l app=validate-registry --timeout=60s
 
-      - name: Run test pod
+      - name: Run E2E Tests
         run: |
-          kubectl apply -f deploy/test/
+          go test e2e-test/e2e_test.go  -v
