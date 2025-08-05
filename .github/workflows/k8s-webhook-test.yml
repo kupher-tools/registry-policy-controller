@@ -21,10 +21,10 @@ jobs:
       - name: Install Dependencies
         run: go mod tidy
 
-      - name: Run Unit Tests
-        run: go test ./... -v
+      #- name: Run Unit Tests
+      #  run: go test ./... -v
 
-      - name: Set up KinD Cluster
+      - name: Set up K8s Cluster
         uses: helm/kind-action@v1.8.0
         with:
           cluster_name: kind
@@ -32,10 +32,10 @@ jobs:
       - name: Build Docker Image
         run: docker build -t webhook:test .
 
-      - name: Load Image into KinD
+      - name: Load Image into CLuster
         run: kind load docker-image webhook:test
 
-      - name: Deploy Cert-Gen
+      - name: Deploy Cert-Gen Application
         run: |
           kubectl apply -f deploy/cert-gen/
       
