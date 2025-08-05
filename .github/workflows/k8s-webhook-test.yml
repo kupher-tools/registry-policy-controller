@@ -62,12 +62,12 @@ jobs:
 
           # Apply the dynamic ValidatingWebhookConfiguration
           kubectl apply -f webhook-final.yaml
-          
+
       - name: Deploy controller
         run: |
-          kubectl apply -f deploy/cert-gen/configmap.yaml
-          kubectl apply -f deploy/cert-gen/deployment.yaml
-          kubectl apply -f deploy/cert-gen/service.yaml
+          kubectl apply -f deploy/controller/configmap.yaml
+          kubectl apply -f deploy/controller/deployment.yaml
+          kubectl apply -f deploy/controller/service.yaml
           kubectl apply -f webhook-final.yaml
 
       - name: Wait for Pods to be Ready
