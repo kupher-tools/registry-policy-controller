@@ -61,10 +61,11 @@ jobs:
           envsubst < deploy/controller/webhook-config.yaml.tpl > webhook-final.yaml
 
           # Apply the dynamic ValidatingWebhookConfiguration
-          kubectl apply -f webhook-final.yaml
+          # kubectl apply -f webhook-final.yaml
 
       - name: Deploy controller
         run: |
+          ls -l
           kubectl apply -f deploy/controller/configmap.yaml
           kubectl apply -f deploy/controller/deployment.yaml
           kubectl apply -f deploy/controller/service.yaml
