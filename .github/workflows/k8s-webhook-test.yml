@@ -26,6 +26,8 @@ jobs:
 
       - name: Set up KinD Cluster
         uses: helm/kind-action@v1.8.0
+        with:
+          cluster_name: kind
 
       - name: Build Docker Image
         run: docker build -t webhook:test .
