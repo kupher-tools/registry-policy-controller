@@ -38,13 +38,35 @@ jobs:
       - name: Deploy to KinD
         run: |
           kubectl apply -f deploy/cert-gen/
+      
+      - name: Wait for TLS Secret
+        run: |
+          echo "Waiting for TLS secret to be created..."
+          for i in {1..20}; do
+            kubectl get secret validate-registry-tls -n default && break
+            echo "Waiting..."
+            sleep 3
+          done
+
+      - name: Extract CA Bundle
+        id: ca
+        run: |
+          # Extract and Base64-encode ca.crt from the secret
+          kubectl get secret validate-registry-tls -n default -o jsonpath='{.data.ca\.crt}' > ca.txt
+          echo "CA_BUNDLE=$(cat ca.txt)" >> $GITHUB_ENV
+
+      - name: Inject CA Bundle into Webhook Configuration
+        run: |
+          # Replace placeholder with actual base64 ca.crt
+          envsubst < deploy/webhook-config.yaml.tpl > webhook-final.yaml
+
+          # Apply the dynamic ValidatingWebhookConfiguration
+          kubectl apply -f webhook-final.yaml
 
       - name: Wait for Pods to be Ready
         run: |
-          kubectl wait --for=condition=ready pod -l app=webhook --timeout=60s
+          kubectl wait --for=condition=ready pod -l app=validate-registry --timeout=60s
 
-      - name: Port Forward & Run Integration Test
+      - name: Run test pod
         run: |
-          kubectl port-forward svc/webhook 8080:80 &
-          sleep 5
-          curl -X POST http://localhost:8080/healthz || exit 1
+          kubectl apply -f deploy/test/
