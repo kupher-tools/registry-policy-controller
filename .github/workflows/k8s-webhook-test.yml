@@ -35,7 +35,7 @@ jobs:
       - name: Load Image into KinD
         run: kind load docker-image webhook:test
 
-      - name: Deploy to KinD
+      - name: Deploy Cert-Gen
         run: |
           kubectl apply -f deploy/cert-gen/
       
@@ -58,9 +58,16 @@ jobs:
       - name: Inject CA Bundle into Webhook Configuration
         run: |
           # Replace placeholder with actual base64 ca.crt
-          envsubst < deploy/webhook-config.yaml.tpl > webhook-final.yaml
+          envsubst < deploy/controller/webhook-config.yaml.tpl > webhook-final.yaml
 
           # Apply the dynamic ValidatingWebhookConfiguration
+          kubectl apply -f webhook-final.yaml
+          
+      - name: Deploy controller
+        run: |
+          kubectl apply -f deploy/cert-gen/configmap.yaml
+          kubectl apply -f deploy/cert-gen/deployment.yaml
+          kubectl apply -f deploy/cert-gen/service.yaml
           kubectl apply -f webhook-final.yaml
 
       - name: Wait for Pods to be Ready
