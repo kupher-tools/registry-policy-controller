@@ -37,9 +37,7 @@ jobs:
 
       - name: Deploy to KinD
         run: |
-          kubectl apply -f k8s/deployment.yaml
-          kubectl apply -f k8s/service.yaml
-          kubectl rollout status deployment/webhook
+          kubectl apply -f deploy/cert-gen/
 
       - name: Wait for Pods to be Ready
         run: |
