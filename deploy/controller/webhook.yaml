@@ -10,6 +10,12 @@ webhooks:
         operations: ["CREATE", "UPDATE"]
         resources: ["*"]
         scope: "*"
+    namespaceSelector:
+      matchExpressions:
+      - key: name
+        operator: NotIn
+        values: ["kube-system", "kube-public", "kube-node-lease", "default"]
+    failurePolicy: Ignore
     clientConfig:
       service:
         name: validate-registry
