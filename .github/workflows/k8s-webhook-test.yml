@@ -1,0 +1,50 @@
+name: Test Webhook in KinD
+
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:  #Manual trigger support
+
+jobs:
+  test-k8s:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@v4
+
+      - name: Set up Go
+        uses: actions/setup-go@v5
+        with:
+          go-version: '1.22'
+
+      - name: Install Dependencies
+        run: go mod tidy
+
+      - name: Run Unit Tests
+        run: go test ./... -v
+
+      - name: Set up KinD Cluster
+        uses: helm/kind-action@v1.8.0
+
+      - name: Build Docker Image
+        run: docker build -t webhook:test .
+
+      - name: Load Image into KinD
+        run: kind load docker-image webhook:test
+
+      - name: Deploy to KinD
+        run: |
+          kubectl apply -f k8s/deployment.yaml
+          kubectl apply -f k8s/service.yaml
+          kubectl rollout status deployment/webhook
+
+      - name: Wait for Pods to be Ready
+        run: |
+          kubectl wait --for=condition=ready pod -l app=webhook --timeout=60s
+
+      - name: Port Forward & Run Integration Test
+        run: |
+          kubectl port-forward svc/webhook 8080:80 &
+          sleep 5
+          curl -X POST http://localhost:8080/healthz || exit 1
